@@ -1,0 +1,251 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[turkish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{Görüntü İşleme - Matematiksel Formüller}
+\author{Görüntü İşleme Dersi}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Görüntü Yükleme ve Temel Kavramlar}
+
+\textbf{Dijital Görüntü Matrisi:}
+\begin{equation}
+I(x,y) \in \mathbb{R}^{M \times N \times C}
+\end{equation}
+
+Burada:
+\begin{itemize}
+    \item $M$ : Yükseklik (satır sayısı)
+    \item $N$ : Genişlik (sütun sayısı)
+    \item $C$ : Kanal sayısı (Gri=1, RGB=3)
+\end{itemize}
+
+\section{Örnekleme (Sampling)}
+
+\textbf{Nyquist-Shannon Örnekleme Teoremi:}
+\begin{equation}
+f_s \geq 2 \cdot f_{max}
+\end{equation}
+
+\textbf{Yeniden Örnekleme (Downsampling):}
+\begin{equation}
+I_{down}(x,y) = I(x \cdot k, y \cdot k)
+\end{equation}
+
+\textbf{Piksel Sayısı:}
+\begin{equation}
+N_{pixels} = M \times N = \frac{M_{orig}}{k} \times \frac{N_{orig}}{k}
+\end{equation}
+
+\section{Kuantalama (Quantization)}
+
+\textbf{Bit Derinliği ve Seviye Sayısı:}
+\begin{equation}
+L = 2^b
+\end{equation}
+
+\textbf{Kuantalama Formülü:}
+\begin{equation}
+Q(I) = \left\lfloor \frac{I}{step} \right\rfloor \times step
+\end{equation}
+
+\begin{equation}
+step = \frac{256}{L} = \frac{256}{2^b}
+\end{equation}
+
+\textbf{Kuantalama Hatası:}
+\begin{equation}
+e_q = I - Q(I)
+\end{equation}
+
+\textbf{Ortalama Kare Hata (MSE):}
+\begin{equation}
+MSE = \frac{1}{MN} \sum_{x=0}^{M-1} \sum_{y=0}^{N-1} [I(x,y) - Q(I(x,y))]^2
+\end{equation}
+
+\section{Renk Uzayları}
+
+\subsection{RGB (Red, Green, Blue)}
+\begin{equation}
+\vec{p} = \begin{bmatrix} R \\ G \\ B \end{bmatrix}, \quad R,G,B \in [0, 255]
+\end{equation}
+
+\subsection{Grayscale (Gri Tonlama)}
+
+\textbf{Luminosity Yöntemi (ITU-R BT.601):}
+\begin{equation}
+Y = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B
+\end{equation}
+
+\textbf{Ortalama Yöntemi:}
+\begin{equation}
+Y = \frac{R + G + B}{3}
+\end{equation}
+
+\subsection{HSV (Hue, Saturation, Value)}
+
+\textbf{RGB $\rightarrow$ HSV Dönüşümü:}
+\begin{equation}
+V = \max(R, G, B)
+\end{equation}
+
+\begin{equation}
+S = \begin{cases} 
+0 & \text{if } V = 0 \\ 
+\frac{V - \min(R,G,B)}{V} & \text{otherwise} 
+\end{cases}
+\end{equation}
+
+\begin{equation}
+H = \begin{cases} 
+0 & \text{if } S = 0 \\
+60^{\circ} \times \frac{G-B}{V-min} & \text{if } V = R \\
+60^{\circ} \times \left(2 + \frac{B-R}{V-min}\right) & \text{if } V = G \\
+60^{\circ} \times \left(4 + \frac{R-G}{V-min}\right) & \text{if } V = B
+\end{cases}
+\end{equation}
+
+\subsection{YCbCr (Luminance, Chrominance)}
+\begin{equation}
+\begin{bmatrix} Y \\ Cb \\ Cr \end{bmatrix} = 
+\begin{bmatrix} 0.299 & 0.587 & 0.114 \\ -0.169 & -0.331 & 0.500 \\ 0.500 & -0.419 & -0.081 \end{bmatrix}
+\begin{bmatrix} R \\ G \\ B \end{bmatrix} +
+\begin{bmatrix} 0 \\ 128 \\ 128 \end{bmatrix}
+\end{equation}
+
+\section{Enhancement - Histogram Eşitleme}
+
+\begin{equation}
+s_k = (L-1) \sum_{j=0}^{k} p_r(r_j) = (L-1) \sum_{j=0}^{k} \frac{n_j}{MN}
+\end{equation}
+
+\section{Restorasyon - Gaussian Filtre}
+
+\textbf{2D Gaussian Fonksiyonu:}
+\begin{equation}
+G(x,y) = \frac{1}{2\pi\sigma^2} e^{-\frac{x^2 + y^2}{2\sigma^2}}
+\end{equation}
+
+\section{Morfolojik İşlemler}
+
+\textbf{Dilation (Genişletme):}
+\begin{equation}
+A \oplus B = \{z : (\hat{B})_z \cap A \neq \emptyset\}
+\end{equation}
+
+\textbf{Erosion (Aşındırma):}
+\begin{equation}
+A \ominus B = \{z : (B)_z \subseteq A\}
+\end{equation}
+
+\textbf{Opening:}
+\begin{equation}
+A \circ B = (A \ominus B) \oplus B
+\end{equation}
+
+\textbf{Closing:}
+\begin{equation}
+A \bullet B = (A \oplus B) \ominus B
+\end{equation}
+
+\section{Thresholding (Eşikleme)}
+
+\textbf{Global Threshold:}
+\begin{equation}
+g(x,y) = \begin{cases} 255 & \text{if } f(x,y) > T \\ 0 & \text{otherwise} \end{cases}
+\end{equation}
+
+\textbf{Otsu Threshold:}
+\begin{equation}
+\sigma_B^2(t) = \omega_0(t)\omega_1(t)[\mu_0(t) - \mu_1(t)]^2
+\end{equation}
+
+\begin{equation}
+t^* = \arg\max_{t} \sigma_B^2(t)
+\end{equation}
+
+\section{Edge Detection (Kenar Tespiti)}
+
+\textbf{Sobel X:}
+\begin{equation}
+G_x = \begin{bmatrix} -1 & 0 & +1 \\ -2 & 0 & +2 \\ -1 & 0 & +1 \end{bmatrix} * I
+\end{equation}
+
+\textbf{Sobel Y:}
+\begin{equation}
+G_y = \begin{bmatrix} -1 & -2 & -1 \\ 0 & 0 & 0 \\ +1 & +2 & +1 \end{bmatrix} * I
+\end{equation}
+
+\textbf{Gradyan Büyüklüğü:}
+\begin{equation}
+G = \sqrt{G_x^2 + G_y^2}
+\end{equation}
+
+\textbf{Gradyan Yönü:}
+\begin{equation}
+\theta = \arctan\left(\frac{G_y}{G_x}\right)
+\end{equation}
+
+\section{K-Means Segmentasyon}
+
+\textbf{Amaç Fonksiyonu:}
+\begin{equation}
+J = \sum_{i=1}^{K} \sum_{x \in C_i} \|x - \mu_i\|^2
+\end{equation}
+
+\textbf{Merkez Güncelleme:}
+\begin{equation}
+\mu_i = \frac{1}{|C_i|} \sum_{x \in C_i} x
+\end{equation}
+
+\section{Connected Components}
+
+\textbf{8-Bağlantılı Komşuluk:}
+\begin{equation}
+N_8(p) = \{q : \|p - q\|_\infty \leq 1\}
+\end{equation}
+
+\section{Emboss (Kabartma) Efekti}
+
+\begin{equation}
+K_{emboss} = \begin{bmatrix} -2 & -1 & 0 \\ -1 & 1 & 1 \\ 0 & 1 & 2 \end{bmatrix}
+\end{equation}
+
+\section{Fourier Dönüşümü}
+
+\textbf{2D Ayrık Fourier Dönüşümü:}
+\begin{equation}
+F(u,v) = \sum_{x=0}^{M-1} \sum_{y=0}^{N-1} f(x,y) \cdot e^{-j2\pi\left(\frac{ux}{M} + \frac{vy}{N}\right)}
+\end{equation}
+
+\textbf{Ters Fourier Dönüşümü:}
+\begin{equation}
+f(x,y) = \frac{1}{MN} \sum_{u=0}^{M-1} \sum_{v=0}^{N-1} F(u,v) \cdot e^{j2\pi\left(\frac{ux}{M} + \frac{vy}{N}\right)}
+\end{equation}
+
+\section{Hough Dönüşümü}
+
+\textbf{Çizgi Tespiti (Polar Form):}
+\begin{equation}
+\rho = x \cos\theta + y \sin\theta
+\end{equation}
+
+\textbf{Daire Tespiti:}
+\begin{equation}
+(x - a)^2 + (y - b)^2 = r^2
+\end{equation}
+
+\section{Konvolüsyon}
+
+\textbf{2D Konvolüsyon:}
+\begin{equation}
+(I * K)(x,y) = \sum_{i=-k}^{k} \sum_{j=-k}^{k} I(x-i, y-j) \cdot K(i,j)
+\end{equation}
+
+\end{document}

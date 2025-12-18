@@ -1,11 +1,10 @@
-# Örnekleme (Sampling) - Çözünürlük azaltma
 import cv2
 import matplotlib.pyplot as plt
 
 img = cv2.imread("ornek.jpg")
-h, w = img.shape[:2]  # Yükseklik ve genişlik
+h, w = img.shape[:2]
 
-factors = [2, 4, 8]  # Küçültme oranları
+factors = [2, 4, 8]
 
 plt.figure(figsize=(12, 4))
 plt.subplot(1, 4, 1)
@@ -14,9 +13,7 @@ plt.title(f"Orijinal\n{w}x{h}")
 plt.axis("off")
 
 for i, f in enumerate(factors):
-    # Küçült (örnekleme azalt)
     small = cv2.resize(img, (w//f, h//f), interpolation=cv2.INTER_NEAREST)
-    # Tekrar büyüt (pikselleşme görülür)
     big = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
     
     plt.subplot(1, 4, i+2)
